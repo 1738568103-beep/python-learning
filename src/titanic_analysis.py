@@ -32,25 +32,24 @@ print("missing values")
 print(missing_values[missing_values>0])
 
 #caculate the surival number and rate
-survial_counts=df["Survived"].value_counts().sort_index()
+survival_counts=df["Survived"].value_counts().sort_index()
 print("\n survial counts:")
-print(survial_counts)
+print(survival_counts)
 survial_rate=df["Survived"].mean()
 print(f"oveall survial rate: {survial_rate:.2%}")
 
 #compare male and female survial rates
-survial_by_sex=df.groupby("Sex")["Survived"].mean()
-print(f"\n survival rate  by sex :{survial_by_sex}")
+survival_by_sex=df.groupby("Sex")["Survived"].mean()
+print(f"\n survival rate  by sex :{survival_by_sex}")
 
-survial_by_class=df.groupby("Pclass")["Survived"].mean()
+survival_by_class=df.groupby("Pclass")["Survived"].mean()
 print("\nSURVIVAL RATE BY CLASS")
-print(survial_by_class)
+print(survival_by_class)
 #==========================================================================
 images_path=Path("images")
 images_path.mkdir(exist_ok=True)
-survial_counts.plot(kind="bar")
 #make the plot
-survial_counts.plot(kind="bar")
+survival_counts.plot(kind="bar")
 
 plt.title("Titanic Survival Counts")
 plt.xlabel("Survival Status")
@@ -63,8 +62,56 @@ plt.xticks (
 
 )
 plt.tight_layout()
+
 plt.savefig(
-    images_path /"survial_counts.png",
+    images_path /"survival_counts.png",
     dpi=300
+)
+plt.show()
+
+
+
+# two factors sex and pclass compare together
+survival_by_class_sex=(
+    df.groupby(["Sex","Pclass"])["Survived"]
+    .mean()
+)
+print(survival_by_class_sex)
+ax=survival_by_sex.plot(kind="bar")
+plt.title("Titanic Survival Rate By sex")
+plt.xlabel("Sex")
+plt.ylabel("Survival Rate")
+plt.xticks(rotation=0)
+plt.ylim(0,1)
+labels=[f"{value:.1%}"for value in survival_by_sex.values]
+ax.bar_label(
+    ax.containers[0],
+    labels=labels,
+    padding=3
+)
+plt.tight_layout()
+plt.savefig(
+    images_path/"survival_rate_by_sex.png",
+    dpi=300
+)
+plt.show()
+# make the Pclass plot
+print(survival_by_class)
+ax=survival_by_class.plot(kind="bar")
+plt.title("Titanic survival Rate by Passanger Class")
+plt.xlabel("Passanger Class")
+plt.ylabel("Survival Rate")
+plt.ylim(0,1)
+
+labels=[f"{value:.1%}" for value in survival_by_class.values]
+ax.bar_label(
+    ax.containers[0],
+    labels=labels,
+    padding=3
+)
+plt.xticks(
+    ticks=[0,1,2],
+    labels=["1st Class","2nd Class","3rd Class"],
+    rotation=0
 )
 plt.show()
