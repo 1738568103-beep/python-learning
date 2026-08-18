@@ -71,12 +71,8 @@ plt.show()
 
 
 
-# two factors sex and pclass compare together
-survival_by_class_sex=(
-    df.groupby(["Sex","Pclass"])["Survived"]
-    .mean()
-)
-print(survival_by_class_sex)
+
+
 ax=survival_by_sex.plot(kind="bar")
 plt.title("Titanic Survival Rate By sex")
 plt.xlabel("Sex")
@@ -113,5 +109,43 @@ plt.xticks(
     ticks=[0,1,2],
     labels=["1st Class","2nd Class","3rd Class"],
     rotation=0
+)
+plt.show()
+plt.savefig(
+    images_path/"survival_rate_by_Pclass.png",
+    dpi=300)
+#two factors
+survival_by_class_sex=(
+    df.groupby(["Sex","Pclass"])["Survived"]
+    .mean()
+)
+print(survival_by_class_sex)
+#------
+
+survival_table = survival_by_class_sex.unstack()
+print("\nSURVIVAL RATE BY SEX AND CLASS")
+print(survival_table)
+ax=survival_table.plot(kind="bar")
+plt.title("Titanic Survival Rate by Sex and Passenger Class")
+plt.xlabel("Sex")
+plt.ylabel("Survial Rate")
+plt.ylim(0,1)
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.legend(
+    title="Passenger Class",
+    labels=["1st Class", "2nd Class", "3rd Class"]
+)
+for container in ax.containers:
+    ax.bar_label(
+        container,
+        fmt="%.1f",
+        padding=3
+    )
+
+
+plt.savefig(
+    images_path/"Survival Rate by sex and pclass",
+    dpi=300
 )
 plt.show()
