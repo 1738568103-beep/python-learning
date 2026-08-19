@@ -112,7 +112,7 @@ plt.xticks(
 )
 plt.show()
 plt.savefig(
-    images_path/"survival_rate_by_Pclass.png",
+    images_path/"survival_rate_by_pclass.png",
     dpi=300)
 #two factors
 survival_by_class_sex=(
@@ -145,7 +145,95 @@ for container in ax.containers:
 
 
 plt.savefig(
-    images_path/"Survival Rate by sex and pclass",
+    images_path/"survival rate by sex and pclass",
     dpi=300
+)
+plt.show()
+# go on to embark and age
+print(df["Embarked"].value_counts())
+print(df["Embarked"].isna().sum())
+survival_by_embarked=df.groupby("Embarked")["Survived"].mean()
+print("\nSURVIVAL RATE BY EMBARKED")
+print(survival_by_embarked)
+ax=survival_by_embarked.plot(kind="bar")
+plt.title("Titanic Survival Rate by Embarkation Port")
+plt.xlabel("Embarkation Port")
+plt.ylabel("Survival Rate")
+plt.ylim(0,1)
+plt.xticks(
+    ticks=[0,1,2],
+    labels=["Cherbourg","Queenstown","Southampton"],
+    rotation=0
+)
+labels=[
+    f"{value:.1%}" 
+    for value in survival_by_embarked.values
+]
+ax.bar_label(
+    ax.containers[0],
+    labels=labels,
+    padding=3
+)
+plt.tight_layout()
+plt.savefig(
+    images_path/"survival_rate_by_embarked",
+    dpi=300
+)
+plt.show()
+# age------------------------------
+print("\nAGE SUMMARY")
+print(df["Age"].describe())
+print(df["Age"].isna().sum())
+ax=df["Age"].plot(
+    kind="hist",
+    bins=20
+)
+plt.title("Titanic Passenger Age Distribution")
+plt.xlabel("Age")
+plt.ylabel("Number of Passengers")
+plt.tight_layout()
+plt.savefig(
+    images_path/"passanger_age_distribution",
+    dpi=300
+)
+plt.show()
+age_bins=[0,12,17,29,49,100]
+age_labels=[
+    "Child",
+    "Teen",
+    "Young Adult",
+    "Adult",
+    "Older Adult"
+]
+df["AgeGroup"]=pd.cut(
+    df["Age"],
+    bins=age_bins,
+    labels=age_labels,
+    include_lowest=True
+
+)
+print(
+    df[["Age", "AgeGroup"]].head(20)
+)
+print(df["AgeGroup"].value_counts(sort=False))
+survival_by_age_group=df.groupby("AgeGroup")["Survived"].mean()
+ax=survival_by_age_group.plot(kind="bar")
+plt.title("Survival Rate By Age Group")
+plt.xlabel("Age Group")
+plt.ylabel("Survival Rate")
+plt.ylim(0,1)
+plt.xticks(rotation=0)
+labels=[
+    f"{value:.1%}"
+    for value in survival_by_age_group.values
+]
+ax.bar_label(
+    ax.containers[0],
+    labels=labels,
+    padding=3
+)
+plt.tight_layout()
+plt.savefig(
+    images_path/"survival rate by age groups"
 )
 plt.show()
